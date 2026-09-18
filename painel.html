@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Central</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body { background: #0f172a; color: #f1f5f9; min-height: 100vh; }
@@ -119,6 +123,24 @@
   }
   .card-item .linha b { color: #cbd5e1; }
   .card-item .linha a { color: #60a5fa; }
+  .card-item .linha-valor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .card-item .linha-valor > span:first-child { flex: 1; word-break: break-word; }
+  .btn-copiar-campo {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 4px;
+    flex-shrink: 0;
+  }
+  .btn-copiar-campo:hover { color: #3b82f6; }
+  .btn-copiar-campo.copiado { color: #4ade80; }
   .card-item .acoes {
     display: flex;
     gap: 8px;
@@ -134,6 +156,8 @@
   }
   .btn-editar { background: #334155; color: #f1f5f9; }
   .btn-excluir { background: #7f1d1d; color: #fecaca; }
+  .btn-copiar-tudo { background: #1e3a5f; color: #93c5fd; }
+  .btn-copiar-tudo.copiado { background: #14532d; color: #86efac; }
 
   .senha-campo { display: flex; align-items: center; gap: 6px; }
   .senha-campo .toggle-senha { cursor: pointer; color: #60a5fa; font-size: 12px; }
