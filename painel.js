@@ -159,12 +159,13 @@ function renderizarItens() {
     aba.campos.slice(1).forEach((campo) => {
       const valor = item[campo.id];
       if (!valor) return;
+      const valorEscapado = valor.replace(/'/g, "\\'");
       if (campo.tipo === 'senha') {
-        linhasHtml += `<div class="linha senha-campo"><b>${campo.label}:</b> <span class="valor-senha" data-valor="${valor}">••••••••</span> <span class="toggle-senha" onclick="alternarSenha(this)">mostrar</span></div>`;
+        linhasHtml += `<div class="linha senha-campo"><b>${campo.label}:</b> <span class="valor-senha" data-valor="${valor}">••••••••</span> <span class="toggle-senha" onclick="alternarSenha(this)">mostrar</span> <button class="btn-copiar-campo" onclick="copiarValor('${valorEscapado}', this)" title="Copiar">📋</button></div>`;
       } else if (campo.tipo === 'link') {
-        linhasHtml += `<div class="linha"><b>${campo.label}:</b> <a href="${valor}" target="_blank">${valor}</a></div>`;
+        linhasHtml += `<div class="linha linha-valor"><span><b>${campo.label}:</b> <a href="${valor}" target="_blank">${valor}</a></span> <button class="btn-copiar-campo" onclick="copiarValor('${valorEscapado}', this)" title="Copiar">📋</button></div>`;
       } else {
-        linhasHtml += `<div class="linha"><b>${campo.label}:</b> ${valor}</div>`;
+        linhasHtml += `<div class="linha linha-valor"><span><b>${campo.label}:</b> ${valor}</span> <button class="btn-copiar-campo" onclick="copiarValor('${valorEscapado}', this)" title="Copiar">📋</button></div>`;
       }
     });
 
@@ -174,12 +175,56 @@ function renderizarItens() {
       <h3>${tituloItem}</h3>
       ${linhasHtml}
       <div class="acoes">
+        <button class="btn-copiar-tudo" onclick="copiarItemInteiro('${id}', this)">📋 Copiar tudo</button>
         <button class="btn-editar" onclick="abrirModalItem('${id}')">Editar</button>
         <button class="btn-excluir" onclick="excluirItem('${id}')">Excluir</button>
       </div>
     `;
     grid.appendChild(card);
   });
+}
+
+// ---------- COPIAR ----------
+function copiarValor(valor, botaoEl) {
+  navigator.clipboard.writeText(valor).then(() => {
+    mostrarFeedbackCopia(botaoEl, '✅', 'copiado');
+  }).catch(() => {
+    alert('Não foi possível copiar. Copie manualmente.');
+  });
+}
+
+function copiarItemInteiro(itemId, botaoEl) {
+  const aba = abas[abaAtivaId];
+  const item = itensAbaAtiva[itemId];
+  if (!item) return;
+
+  const linhas = aba.campos
+    .filter((campo) => item[campo.id])
+    .map((campo) => `${campo.label}: ${item[campo.id]}`);
+
+  const textoFinal = linhas.join('\n');
+
+  navigator.clipboard.writeText(textoFinal).then(() => {
+    const textoOriginal = botaoEl.textContent;
+    botaoEl.textContent = '✅ Copiado!';
+    botaoEl.classList.add('copiado');
+    setTimeout(() => {
+      botaoEl.textContent = textoOriginal;
+      botaoEl.classList.remove('copiado');
+    }, 1500);
+  }).catch(() => {
+    alert('Não foi possível copiar. Copie manualmente.');
+  });
+}
+
+function mostrarFeedbackCopia(botaoEl, iconeTemporario, classeTemp) {
+  const iconeOriginal = botaoEl.textContent;
+  botaoEl.textContent = iconeTemporario;
+  botaoEl.classList.add(classeTemp);
+  setTimeout(() => {
+    botaoEl.textContent = iconeOriginal;
+    botaoEl.classList.remove(classeTemp);
+  }, 1200);
 }
 
 function alternarSenha(spanEl) {
